@@ -35,7 +35,7 @@ class ContrastiveLearningDataset(torch.utils.data.Dataset):
         label_2 = self.labels[id_2]
         
         sign = 1 if label_1 == label_2 else -1
-        weight = (self.classes_val_count[label_1] * self.classes_val_count[label_2]) / self.prod_len
+        weight = self.prior_len / (self.classes_val_count[label_1] * self.classes_val_count[label_2])
         
         return (
             image_1,
