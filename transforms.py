@@ -5,6 +5,7 @@ train_transforms = T.Compose([
     T.RandomPerspective(distortion_scale=0.2),
     T.RandomHorizontalFlip(p=0.5),
     T.RandomVerticalFlip(p=0.5),
-    T.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.1, hue=0)
+    T.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.1, hue=0),
+    T.ToTensor()
 ])
 
