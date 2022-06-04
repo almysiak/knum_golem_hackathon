@@ -5,6 +5,7 @@ class ContrastiveLoss(torch.nn.Module):
         super().__init__()
         self.eps = eps
         self.reduction = reduction
+        
     def forward(self, y_1, y_2, sign, weight=None):
         same = (sign + 1) // 2
         sqr_dst = ((y_1 - y_2)**2).sum(dim=-1)
@@ -22,6 +23,7 @@ class CosineSimilarityLoss(torch.nn.Module):
         super().__init__()
         self.cos_sim = torch.nn.CosineSimilarity(dim=1, eps=eps)
         self.reduction = reduction
+        
     def forward(self, y_1, y_2, sign, weight=None):
         cs = self.cos_sim(y_1, y_2)
         loss = - cs * sign
