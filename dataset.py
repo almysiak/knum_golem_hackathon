@@ -46,4 +46,29 @@ class ContrastiveLearningDataset(torch.utils.data.Dataset):
 
     def __len__(self):
         return self.prod_len
+    
+class SimpleDataset(torch.utils.data.Dataset):
+    def __init__(
+        self,
+        images,
+        labels,
+        transforms,
+    ):
+        self.transforms = transforms
+        self.images = images
+        self.labels = labels   
+
+    def __getitem__(self, idx): 
+        image = self.transforms(
+            self.images[idx]
+        )
+        label = self.labels[idx]
+        
+        return (
+            image,
+            label
+        )
+
+    def __len__(self):
+        return len(self.labels)
 

@@ -1,6 +1,7 @@
-from turtle import forward
 import torch
+from torch import Tensor
 from torchvision.transforms import transforms as T, functional as F
+import torchvision
 
 class ResizeToSquare(torch.nn.Module):
     def __init__(self, scale):
@@ -23,9 +24,25 @@ class ResizeToSquare(torch.nn.Module):
         x = (255 * x).to(torch.uint8)
         # print(x.shape)
         return x
-        
-        
-        
+    
+class ConvertImageDtype(torch.nn.Module):
+    def __init__(self, dtype: torch.dtype) -> None:
+        super().__init__()
+        self.dtype = dtype
+
+    def forward(self, image):
+        image = F.convert_image_dtype(image, self.dtype)
+        return image
+class Normalize(torch.nn.Module):
+    def __init__(self):
+        super(Normalize, self).__init__()
+        self.normalizer = torchvision.transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+
+    def forward(self, image):
+        return self.normalizer(image)
         
 
 train_transforms = T.Compose([
@@ -34,7 +51,13 @@ train_transforms = T.Compose([
     T.RandomHorizontalFlip(p=0.5),
     T.RandomVerticalFlip(p=0.5),
     T.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.1, hue=0.05),
-    ResizeToSquare(224)
+    ResizeToSquare(224),
+    ConvertImageDtype(torch.float32)
+])
+
+val_transforms = T.Compose([
+    ResizeToSquare(224),
+    ConvertImageDtype(torch.float32)
 ])
 
 
