@@ -14,4 +14,8 @@ class ImageEmbeddingModel(nn.Module):
         out = self.last_layer(out)
         out = torch.nn.functional.normalize(out)
         return out
+    def get_last_params(self):
+        return self.last_layer.parameters()
+    def get_backbone_params(self):
+        return self.backbone.parameters()
         

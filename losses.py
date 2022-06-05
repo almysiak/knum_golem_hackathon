@@ -6,7 +6,7 @@ class ContrastiveLoss(torch.nn.Module):
         self.eps = eps
         self.reduction = reduction
     def forward(self, y_1, y_2, sign, weight=None):
-        same = (sign + 1) // 2
+        same = (sign + 1) / 2
         sqr_dst = ((y_1 - y_2)**2).sum(dim=-1)
         loss = same * sqr_dst + (1 - same) * torch.clip(self.eps - torch.sqrt(sqr_dst) , min=0) ** 2
         if weight is not None:
