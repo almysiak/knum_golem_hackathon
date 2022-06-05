@@ -139,10 +139,16 @@ def predict_knn(model, ref_data, valid_data, k=3, feature_extractor=None, final=
         dists = ((ref_vects - vect)**2).sum(dim=1)
         # print(dists.shape) # 144
         k_nearest = dists.argsort()[:k]
-        classes = [ref_data.category_id[ref_idx_to_id[idx.item()]] for idx in k_nearest]
+        # print(k_nearest)
+        # print([ref_idx_to_id[idx.item()] for idx in k_nearest])
+        # print(ref_data.category_id[217][0])
+        # ref_data[ref_data.id == 217].category_id.values[0]
+        classes = [ref_data[ref_data.id == ref_idx_to_id[idx.item()]].category_id.values[0] for idx in k_nearest]
         
         def most_common(lst):
             return max(set(lst), key=lst.count)
+        
+        # print(classes)
         
         class_ = most_common(classes)
 
