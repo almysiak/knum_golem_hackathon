@@ -12,7 +12,7 @@ class ImageEmbeddingModel(nn.Module):
         out = self.backbone.extract_endpoints(x)['reduction_6']
         out = out.reshape((-1, 7*7*1280))
         out = self.last_layer(out)
-        out = torch.nn.functional.normalize(out)
+        # out = torch.nn.functional.normalize(out)
         return out
     def get_last_params(self):
         return self.last_layer.parameters()
