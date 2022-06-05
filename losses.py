@@ -2,18 +2,19 @@ import torch
 from itertools import combinations
 
 class ContrastiveLoss(torch.nn.Module):
-    def __init__(self, eps, reduction="mean"):
+    def __init__(self, eps, reduction="mean", pos_weight=1.):
         super().__init__()
         self.eps = eps
+        self.pos_weight = pos_weight
         self.reduction = reduction
         
     def forward(self, ys, labels):
         loss = torch.zeros(1).to(ys)
         for (y1, l1), (y2, l2) in combinations(zip(ys, labels), 2):
             sqr_dst = ((y1 - y2)**2).sum(dim=-1)
-            loss += sqr_dst if l1 == l2 else torch.clip(self.eps - torch.sqrt(sqr_dst) , min=0) ** 2
+            loss += self.pos_weight * sqr_dst if l1 == l2 else torch.clip(self.eps - torch.sqrt(sqr_dst) , min=0) ** 2
         if self.reduction == "mean":
-            return loss / len(labels)
+            return loss / (len(labels) * (len(labels) - 1) / 2)
         else:
             return loss
         
@@ -31,7 +32,7 @@ class CosineSimilarityLoss(torch.nn.Module):
             cs = self.cos_sim(y1, y2)
             loss += cs * (-self.pos_weight if l1 == l2 else 1)
         if self.reduction == "mean":
-            return loss / len(labels)
+            return loss / (len(labels) * (len(labels) - 1) / 2)
         else:
             return loss
 
